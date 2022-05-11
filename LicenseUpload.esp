@@ -1,0 +1,46 @@
+<% 
+
+var uploadDir = "/pstorage/ftpupload/";
+
+buffer = "";
+
+trace(" in upload.esp\n");
+
+if (request["REQUEST_METHOD"] == "POST") {
+	trace(" REQUEST_METHOD == POST\n");
+	length = 0;
+	var result = "OK";
+	for (f in files) {
+										trace("f:"+f +"\n");
+		trace("FILENAME: " + files[f].FILENAME + "\n"); 
+		trace("CLIENT_FILENAME: " + files[f].CLIENT_FILENAME + "\n"); 
+		trace("SIZE: " + files[f].SIZE + "\n"); 
+
+
+		result = "OK";
+		target = uploadDir + "LicenseKey_upload";
+		rename(files[f].FILENAME, target);
+			
+		if ("OK" == result)
+		{
+			trace("result = " + result + "\n");
+			write("<receivedBytes>" + files[f].SIZE +
+				  "</receivedBytes>\n<status>ok</status>\n");
+		}
+		else
+		{
+			trace("result = " + result + "\n");
+			var xml = "<statusMessage>" + result + "</statusMessage>\n<status>ok</status>\n";
+			trace("xml = " + xml + "\n");
+			write(xml);
+		}
+		
+       	write("</root>");
+	}
+	return;
+}
+%>
+<root>
+<statusMessage>Get not supported, use post.</statusMessage>
+<status>error</status>
+</root>
